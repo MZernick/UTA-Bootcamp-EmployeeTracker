@@ -8,21 +8,23 @@ CREATE TABLE department (
   department_name VARCHAR(30) NOT NULL
 );
 
-CREATE TABLE role (
+CREATE TABLE roles (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  title INT,
-  salary TEXT,
-  department_id INT NOT NULL,
-  FOREIGN KEY (movie_id)
-  REFERENCES movies(id)
+  title VARCHAR(30) NOT NULL,
+  salary DECIMAL NOT NULL,
+  department_id INT,
+  FOREIGN KEY (department_id)
+  REFERENCES department(id)
   ON DELETE SET NULL
 );
 
 CREATE TABLE employee (
   id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  movie_id INT,
-  review TEXT,
-  FOREIGN KEY (movie_id)
-  REFERENCES movies(id)
+  first_name VARCHAR(30) NOT NULL,
+  last_name VARCHAR(30) NOT NULL,
+  role_id INT NOT NULL,
+  manager_id INT,
+  FOREIGN KEY (role_id)
+  REFERENCES roles(id)
   ON DELETE SET NULL
 );
