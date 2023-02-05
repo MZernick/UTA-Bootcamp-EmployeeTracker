@@ -13,7 +13,7 @@ const viewDepartments = (connection) => {
 
 //VIEW ROLES
 const viewRoles = (connection) => {
-    return connection.query("SELECT * FROM roles;")
+    return connection.query("SELECT roles.id, roles.title, roles.salary, department.department_name FROM roles INNER JOIN department ON department.id = roles.department_id ORDER BY roles.id;")
         .then(([roles]) => {
             console.table(roles);
         });
@@ -21,7 +21,7 @@ const viewRoles = (connection) => {
 
 //VIEW EMPLOYEES
 const viewEmployees = (connection) => {
-    return connection.query("SELECT * FROM employees;")
+    return connection.query("SELECT a.id, a.first_name AS 'First Name', a.last_name AS 'Last Name', a.role_id AS 'Title', department.department_name AS 'Department', roles.salary AS 'Salary', CONCAT(b.first_name, ' ', b.last_name) AS 'Manager' FROM employees AS a JOIN roles ON a.role_id = roles.id JOIN department ON roles.department_id = department.id LEFT OUTER JOIN employees AS b ON a.manager_id = b.id;")
         .then(([employees]) => {
             console.table(employees);
         });
@@ -36,7 +36,7 @@ const addDepartment = (connection) => {
             name: 'department_name',
         },
     ]).then(({ department_name }) => {
-        return connection.query("INSERT INTO department SET ?", department_name, (err, result)=> {
+        return connection.query("INSERT INTO department SET ?", department_name, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
@@ -76,8 +76,8 @@ const addRole = (connection) => {
                 '4 Legal'
             ]
         }
-    ]).then(({  }) => {
-        return connection.query("INSERT INTO Role SET ?", {title, salary, department_id}, (err, result)=> {
+    ]).then(({ }) => {
+        return connection.query("INSERT INTO Role SET ?", { title, salary, department_id }, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
@@ -110,8 +110,8 @@ const addEmployee = (connection) => {
             type: 'list',
             message: 'What is the role of the new employee?',
             name: 'title',
-            choices: [ 
-                'Salesperson', 
+            choices: [
+                'Salesperson',
                 'Sales Team Lead',
                 'Lead Engineer',
                 'Software Engineer',
@@ -133,7 +133,7 @@ const addEmployee = (connection) => {
             ]
         },
     ]).then(({ Employee_name }) => {
-        return connection.query("INSERT INTO Employee SET ?", Employee_name, (err, result)=> {
+        return connection.query("INSERT INTO Employee SET ?", Employee_name, (err, result) => {
             if (err) {
                 res.status(500).json({ error: err.message });
                 return;
