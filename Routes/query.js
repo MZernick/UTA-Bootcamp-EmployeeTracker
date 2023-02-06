@@ -28,33 +28,31 @@ const viewEmployees = (connection) => {
 };
 
 //ADD DEPARTMENT
-const addDepartment = (connection) => {
-    return inquirer.prompt([
+const addDepartment = () => {
+    inquirer.prompt([
         {
             type: 'input',
             message: 'What is the name of the New Department?',
             name: 'department_name',
         },
-    ]).then(({ department_name }) => {
-        return connection.query("INSERT INTO department SET ?", department_name, (err, result) => {
+    ]).then((response) => {
+        console.log(response)
+        db.query("INSERT INTO department (department_name) VALUES (?)", response.department_name, (err, result) => {
             if (err) {
-                res.status(500).json({ error: err.message });
+                response.status(500).json({ error: err.message });
                 return;
             }
-            res.json({
-                message: 'success',
-                data: result
-            });
         })
     })
         .then(() => {
-            console.log("Added New Department")
+            console.log("Added New Department");
+            main();
         })
 };
 
 //ADD ROLE
-const addRole = (connection) => {
-    return inquirer.prompt([
+const addRole = () => {
+    inquirer.prompt([
         {
             type: 'input',
             message: 'What is the New Role?',
@@ -76,26 +74,33 @@ const addRole = (connection) => {
                 '4 Legal'
             ]
         }
-    ]).then(({ }) => {
-        return connection.query("INSERT INTO Role SET ?", { title, salary, department_id }, (err, result) => {
+    ]).then((response) => {
+        console.log(response);
+        // if (response.department === '1 Sales') {
+        //     var departmentID = 1;
+        // }else if (response.department === '2 Engineering') {
+        //     var departmentID =2;
+        // }else if (response.department === '3 Finance') {
+        //     var departmentID =3;
+        // }else if (response.department === '4 Legal') {
+        //     var departmentID =4;
+        // }
+        db.query("INSERT INTO roles (title, salary, department_id) VALUES (???, ??, ?);", [ response.title, response.salary, response.department.substring(0,2) ], (err, result) => {
             if (err) {
-                res.status(500).json({ error: err.message });
+                response.status(500).json({ error: err.message });
                 return;
             }
-            res.json({
-                message: 'success',
-                data: result
-            });
         })
     })
         .then(() => {
-            console.log("Added Role")
+            console.log("Added Role");
+            main();
         })
 };
 
 //ADD Employee
-const addEmployee = (connection) => {
-    return inquirer.prompt([
+const addEmployee = () => {
+    inquirer.prompt([
         {
             type: 'input',
             message: 'What is the first name of the new employee?',
@@ -111,14 +116,14 @@ const addEmployee = (connection) => {
             message: 'What is the role of the new employee?',
             name: 'title',
             choices: [
-                'Salesperson',
-                'Sales Team Lead',
-                'Lead Engineer',
-                'Software Engineer',
-                'Account Manager',
-                'Accountant',
-                'Legal Team Lead',
-                'Lawyer'
+                '1 Salesperson',
+                '2 Sales Team Lead',
+                '3 Lead Engineer',
+                '4 Software Engineer',
+                '5 Account Manager',
+                '6 Accountant',
+                '7 Legal Team Lead',
+                '8 Lawyer'
             ]
         },
         {
@@ -126,22 +131,19 @@ const addEmployee = (connection) => {
             message: 'Who will they report to?',
             name: 'manager',
             choices: [
-                'Joe Luna',
-                'Ashley Rodriguez',
-                'Kunal Singh',
-                'Sarah Lourd'
+                '2 Joe Luna',
+                '3 Ashley Rodriguez',
+                '5 Kunal Singh',
+                '7 Sarah Lourd'
             ]
         },
-    ]).then(({ Employee_name }) => {
-        return connection.query("INSERT INTO Employee SET ?", Employee_name, (err, result) => {
+    ]).then((response) => {
+        console.log(response)
+        db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (????, ???, ??, ?)", [response.first_name, response.last_name, response.title.substring(0,2), response.manager.substring(0,2)], (err, result) => {
             if (err) {
-                res.status(500).json({ error: err.message });
+                response.status(500).json({ error: err.message });
                 return;
             }
-            res.json({
-                message: 'success',
-                data: result
-            });
         })
     })
         .then(() => {
@@ -149,6 +151,49 @@ const addEmployee = (connection) => {
         })
 };
 
-module.exports = addDepartment;
-
-module.exports = viewDepartments;
+//ADD Employee
+const updateEmployee = () => {
+    inquirer.prompt([
+        {
+            type: 'list',
+            message: 'Which employee would you like to update?',
+            name: 'first_name',
+            choices: [
+                'Mike',
+                'Joe',
+                'Ashley',
+                'Kevin',
+                'Kunal',
+                'Malia',
+                'Sarah',
+                'Tom'
+            ]
+        },
+        {
+            type: 'list',
+            message: 'What is the role of the new employee?',
+            name: 'title',
+            choices: [
+                '1 Salesperson',
+                '2 Sales Team Lead',
+                '3 Lead Engineer',
+                '4 Software Engineer',
+                '5 Account Manager',
+                '6 Accountant',
+                '7 Legal Team Lead',
+                '8 Lawyer'
+            ]
+        },
+    ]).then((response) => {
+        console.log(response)
+        db.query("UPDATE employees SET role_id = ?? WHERE first_name = ?", [response.title.substring(0,2), response.first_name], (err, result) => {
+            if (err) {
+                response.status(500).json({ error: err.message });
+                return;
+            }
+        })
+    })
+        .then(() => {
+            console.log(`"Updated ${response.first_name}'s file"`)
+        })
+};
