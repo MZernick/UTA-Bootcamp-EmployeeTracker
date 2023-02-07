@@ -139,7 +139,7 @@ const addEmployee = () => {
         },
     ]).then((response) => {
         console.log(response)
-        db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (????, ???, ??, ?)", [response.first_name, response.last_name, response.title.substring(0,2), response.manager.substring(0,2)], (err, result) => {
+        db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [response.first_name, response.last_name, response.title.substring(0,2), response.manager.substring(0,2)], (err, result) => {
             if (err) {
                 response.status(500).json({ error: err.message });
                 return;
@@ -147,11 +147,12 @@ const addEmployee = () => {
         })
     })
         .then(() => {
-            console.log("Added New Employee")
+            console.log("Added New Employee");
+            main();
         })
 };
 
-//ADD Employee
+//UPDATE Employee ROLE
 const updateEmployee = () => {
     inquirer.prompt([
         {
@@ -186,7 +187,7 @@ const updateEmployee = () => {
         },
     ]).then((response) => {
         console.log(response)
-        db.query("UPDATE employees SET role_id = ?? WHERE first_name = ?", [response.title.substring(0,2), response.first_name], (err, result) => {
+        db.query("UPDATE employees SET role_id = ? WHERE first_name = ?", [response.title.substring(0,2), response.first_name], (err, result) => {
             if (err) {
                 response.status(500).json({ error: err.message });
                 return;
