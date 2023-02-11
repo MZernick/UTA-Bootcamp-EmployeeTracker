@@ -21,8 +21,13 @@ USE office_db;
 -- INSERT INTO roles (title, salary, department_id) 
 -- VALUES ('Web Development', 80000, 2)
 
--- Update Employee
-UPDATE employees 
-SET role_id = ? 
-WHERE first_name = 
-            "", [response.title.substring(0,2), response.first_name]
+-- UPDATE employees 
+-- SET role_id = ? 
+-- WHERE first_name = 
+--             "", [response.title.substring(0,2), response.first_name]
+
+-- current managers
+-- SELECT department_name FROM department;
+
+-- total budget by department
+SELECT SUM(salary) FROM roles JOIN employees on employees.role_id = roles.id JOIN department on department.id = roles.department_id

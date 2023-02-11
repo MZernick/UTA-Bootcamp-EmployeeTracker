@@ -29,7 +29,7 @@ inquirer.prompt([
         ]
     }
 ]).then((response)=> {
-    // console.log(response);
+    console.log(response);
     if (response.mainprompt === 'View all Departments') {
        return viewDepartments();
     }else if (response.mainprompt === 'View all Roles') {
@@ -96,6 +96,8 @@ const addDepartment = () => {
             main();
         })
 };
+    
+
 
 //ADD ROLE
 const addRole = () => {
@@ -140,6 +142,9 @@ const addRole = () => {
         })
 };
 
+//CURRENT DEPARTMENT
+
+
 //ADD Employee
 const addEmployee = () => {
     inquirer.prompt([
@@ -179,7 +184,8 @@ const addEmployee = () => {
                 '7 Sarah Lourd'
             ]
         },
-    ]).then((response) => {
+    ])
+    .then((response) => {
         console.log(response)
         db.query("INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)", [response.first_name, response.last_name, response.title.substring(0,2), response.manager.substring(0,2)], (err, result) => {
             if (err) {
@@ -194,7 +200,7 @@ const addEmployee = () => {
         })
 };
 
-//UPDATE Employee ROLE
+//UPDATE Employee
 const updateEmployee = () => {
     inquirer.prompt([
         {
